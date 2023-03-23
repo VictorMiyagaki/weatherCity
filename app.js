@@ -4,10 +4,13 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
+app.set('view engine', 'ejs');
+
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/index.html");
+    res.render("index");
 });
 
 app.post("/", function (req, res) {
@@ -21,11 +24,7 @@ app.post("/", function (req, res) {
             const temp = weatherData.main.temp;
             const weatherDescription = weatherData.weather[0].description;
             const icon = "https://openweathermap.org/img/wn/" + weatherData.weather[0].icon + "@2x.png";
-            res.write("<body style='background-color:lightblue; text-align: center;'>");
-            res.write("<h1>The temperature in " + query + " is " + temp + " degrees</h1>");
-            res.write("<p>The weather is " + weatherDescription + "</p>");
-            res.write("<img src='" + icon + "'>")
-            res.send();
+            res.render("weather", { icon: icon, weatherDescription: weatherDescription, query: query, temp: temp });
         })
     })
 })
